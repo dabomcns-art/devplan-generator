@@ -1,0 +1,120 @@
+[
+  {
+    "id": "shopping",
+    "label": "쇼핑몰",
+    "overview": {
+      "project_name": "온라인 쇼핑몰",
+      "project_purpose": "사용자가 다양한 상품을 검색하고 구매할 수 있는 전자상거래 플랫폼. 판매자는 상품을 등록하고 주문을 관리할 수 있습니다.",
+      "target_users": [
+        { "id": "consumer", "label": "일반 소비자" },
+        { "id": "seller", "label": "판매자/셀러" }
+      ],
+      "core_features": [
+        { "id": "f1", "title": "상품 검색 및 카테고리 탐색", "priority": "must" },
+        { "id": "f2", "title": "장바구니 및 결제", "priority": "must" },
+        { "id": "f3", "title": "주문 관리 및 배송 추적", "priority": "must" },
+        { "id": "f4", "title": "판매자 대시보드", "priority": "must" },
+        { "id": "f5", "title": "리뷰 및 평점 시스템", "priority": "should" },
+        { "id": "f6", "title": "쿠폰 및 프로모션", "priority": "should" }
+      ],
+      "platform": ["web", "ios", "android"],
+      "budget_scale": "medium",
+      "timeline": "6months"
+    },
+    "benchmark": {
+      "type": "benchmark",
+      "targets": [
+        { "id": "b1", "service_name": "쿠팡", "service_url": "https://www.coupang.com", "analysis_scope": ["ui_ux", "features", "business_model"] },
+        { "id": "b2", "service_name": "무신사", "service_url": "https://www.musinsa.com", "analysis_scope": ["ui_ux", "features"] }
+      ]
+    }
+  },
+  {
+    "id": "saas",
+    "label": "SaaS 대시보드",
+    "overview": {
+      "project_name": "SaaS 분석 대시보드",
+      "project_purpose": "B2B 고객을 위한 데이터 분석 및 시각화 대시보드. 실시간 메트릭 모니터링과 리포트 생성 기능을 제공합니다.",
+      "target_users": [
+        { "id": "b2b", "label": "B2B 기업" },
+        { "id": "analyst", "label": "데이터 분석가" }
+      ],
+      "core_features": [
+        { "id": "f1", "title": "실시간 데이터 대시보드", "priority": "must" },
+        { "id": "f2", "title": "커스텀 차트 및 위젯", "priority": "must" },
+        { "id": "f3", "title": "자동 리포트 생성", "priority": "must" },
+        { "id": "f4", "title": "팀 협업 및 공유", "priority": "should" },
+        { "id": "f5", "title": "API 연동 (데이터 소스)", "priority": "must" }
+      ],
+      "platform": ["web"],
+      "budget_scale": "medium",
+      "timeline": "6months"
+    },
+    "benchmark": {
+      "type": "benchmark",
+      "targets": [
+        { "id": "b1", "service_name": "Notion", "service_url": "https://www.notion.so", "analysis_scope": ["ui_ux", "features"] },
+        { "id": "b2", "service_name": "Mixpanel", "service_url": "https://mixpanel.com", "analysis_scope": ["features", "tech_stack"] }
+      ]
+    }
+  },
+  {
+    "id": "community",
+    "label": "커뮤니티 플랫폼",
+    "overview": {
+      "project_name": "커뮤니티 플랫폼",
+      "project_purpose": "특정 관심사를 가진 사용자들이 모여 정보를 공유하고 소통할 수 있는 커뮤니티 서비스. 게시글, 댓글, 실시간 채팅을 지원합니다.",
+      "target_users": [
+        { "id": "consumer", "label": "일반 소비자" },
+        { "id": "creator", "label": "콘텐츠 크리에이터" }
+      ],
+      "core_features": [
+        { "id": "f1", "title": "게시글 작성 및 카테고리", "priority": "must" },
+        { "id": "f2", "title": "댓글 및 좋아요", "priority": "must" },
+        { "id": "f3", "title": "실시간 채팅", "priority": "should" },
+        { "id": "f4", "title": "사용자 프로필 및 팔로우", "priority": "must" },
+        { "id": "f5", "title": "검색 및 해시태그", "priority": "should" }
+      ],
+      "platform": ["web", "ios", "android"],
+      "budget_scale": "mvp",
+      "timeline": "3months"
+    },
+    "benchmark": {
+      "type": "reference",
+      "targets": [
+        { "id": "b1", "service_name": "당근마켓", "service_url": "https://www.daangn.com", "analysis_scope": ["ui_ux", "features"] },
+        { "id": "b2", "service_name": "블라인드", "service_url": "https://www.teamblind.com", "analysis_scope": ["ui_ux", "features"] }
+      ]
+    }
+  },
+  {
+    "id": "education",
+    "label": "교육 플랫폼",
+    "overview": {
+      "project_name": "온라인 교육 플랫폼",
+      "project_purpose": "강사가 온라인 강의를 제작하고 학생이 수강할 수 있는 교육 플랫폼. 동영상 강의, 과제, 퀴즈, 수료증 발급을 지원합니다.",
+      "target_users": [
+        { "id": "student", "label": "학생" },
+        { "id": "instructor", "label": "강사/교육자" }
+      ],
+      "core_features": [
+        { "id": "f1", "title": "동영상 강의 플레이어", "priority": "must" },
+        { "id": "f2", "title": "강의 제작 도구", "priority": "must" },
+        { "id": "f3", "title": "과제 및 퀴즈", "priority": "must" },
+        { "id": "f4", "title": "수강 진도 관리", "priority": "must" },
+        { "id": "f5", "title": "수료증 발급", "priority": "should" },
+        { "id": "f6", "title": "Q&A 게시판", "priority": "should" }
+      ],
+      "platform": ["web"],
+      "budget_scale": "medium",
+      "timeline": "6months"
+    },
+    "benchmark": {
+      "type": "benchmark",
+      "targets": [
+        { "id": "b1", "service_name": "인프런", "service_url": "https://www.inflearn.com", "analysis_scope": ["ui_ux", "features", "business_model"] },
+        { "id": "b2", "service_name": "클래스101", "service_url": "https://class101.net", "analysis_scope": ["ui_ux", "features"] }
+      ]
+    }
+  }
+]
