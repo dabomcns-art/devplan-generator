@@ -16,10 +16,12 @@ import {
   Save,
   FileText,
   Copy,
+  Download,
 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { useGeneratorStore } from "@/lib/store/generator-store";
 import { MarkdownPreview } from "@/components/shared/markdown-preview";
+import { getDocPrompt } from "@/lib/prompts/doc-prompts";
 import type { DocType, DocumentFile } from "@/lib/types";
 
 const DOC_CONFIGS: { type: DocType; filename: string; label: string }[] = [
@@ -27,7 +29,7 @@ const DOC_CONFIGS: { type: DocType; filename: string; label: string }[] = [
   { type: "feature_spec", filename: "docs/feature-spec.md", label: "기능 스펙" },
   { type: "api_design", filename: "docs/api-design.md", label: "API 설계" },
   { type: "database_schema", filename: "docs/database-schema.md", label: "DB 스키마" },
-  { type: "ui_menu_tree", filename: "docs/ui-menu-tree.md", label: "UI 메뉴 트리" },
+  { type: "ui_menu_tree", filename: "docs/ui-menu-tree.md", label: "UI 메뉴 트리 및 페이지목록" },
   { type: "dev_timeline", filename: "docs/development-timeline.md", label: "개발 일정" },
   { type: "tech_stack", filename: "docs/tech-stack.md", label: "기술 스택" },
 ];
@@ -159,6 +161,64 @@ export default function Step4Page() {
     }
   };
 
+  const downloadResearchWithPrompts = () => {
+    const research = store.research;
+    const context = {
+      overview: store.overview,
+      benchmark: store.benchmark,
+      research: store.research,
+      documents: store.documents,
+    };
+
+    let content = `# 업계 조사 자료 + AI 문서 생성 프롬프트\n\n`;
+    content += `프로젝트명: ${store.overview.project_name || "미정"}\n`;
+    content += `생성일: ${new Date().toLocaleDateString("ko-KR")}\n\n`;
+
+    // 업계 조사 결과
+    content += `---\n\n# 📊 업계 조사 결과\n\n`;
+
+    if (research.results.market_analysis) {
+      content += `## 시장 분석\n\n${research.results.market_analysis}\n\n`;
+    }
+    if (research.results.competitor_analysis) {
+      content += `## 경쟁사 분석\n\n${research.results.competitor_analysis}\n\n`;
+    }
+    if (research.results.korean_market) {
+      content += `## 한국 시장 분석\n\n${research.results.korean_market}\n\n`;
+    }
+    if (research.results.tech_trends) {
+      content += `## 기술 트렌드\n\n${research.results.tech_trends}\n\n`;
+    }
+
+    // 출처
+    if (research.sources.length > 0) {
+      content += `## 출처\n\n`;
+      research.sources.forEach((s, i) => {
+        content += `${i + 1}. [${s.title}](${s.url})\n`;
+      });
+      content += `\n`;
+    }
+
+    // 문서 생성 프롬프트
+    content += `---\n\n# 🤖 AI 문서 생성 프롬프트\n\n`;
+    content += `> 아래 프롬프트는 각 문서 생성 시 Claude API에 전달되는 내용입니다.\n\n`;
+
+    for (const config of DOC_CONFIGS) {
+      const { system, user } = getDocPrompt(config.type, context);
+      content += `## ${config.label} (${config.filename})\n\n`;
+      content += `### System Prompt\n\n\`\`\`\n${system}\n\`\`\`\n\n`;
+      content += `### User Prompt\n\n\`\`\`\n${user}\n\`\`\`\n\n---\n\n`;
+    }
+
+    const blob = new Blob([content], { type: "text/markdown;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${store.overview.project_name || "project"}_research_prompts.md`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const completedDocs = docs.documents.filter((d) => d.status === "completed").length;
   const totalTokens = docs.documents.reduce((sum: number, d) => sum + d.tokens_used, 0);
   void totalTokens;
@@ -210,6 +270,13 @@ export default function Step4Page() {
               Regenerate
             </button>
           )}
+          <button
+            onClick={downloadResearchWithPrompts}
+            className="flex items-center gap-2 rounded-lg bg-primary/10 border border-primary/20 px-4 py-2.5 text-sm font-medium text-primary transition-colors hover:bg-primary/20"
+          >
+            <Download className="h-4 w-4" />
+            조사자료 다운로드
+          </button>
           {!isGenerating && docs.status !== "completed" && (
             <button
               onClick={generateAll}

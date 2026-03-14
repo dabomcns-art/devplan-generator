@@ -66,6 +66,7 @@ export default function ResearchPage() {
     updateResearchQuery,
     setResearchResults,
     setStep,
+    saveToLocal,
   } = useGeneratorStore();
 
   const [activeTab, setActiveTab] = useState<TabId>("market_analysis");
@@ -156,6 +157,7 @@ export default function ResearchPage() {
         }
 
         setResearchStatus("completed");
+        saveToLocal();
       } catch (err) {
         console.error("Research error:", err);
         setResearchStatus("error");
@@ -163,7 +165,7 @@ export default function ResearchPage() {
         setIsRunning(false);
       }
     },
-    [isRunning, overview, benchmark, research.queries, setResearchStatus, setResearchQueries, updateResearchQuery, setResearchResults]
+    [isRunning, overview, benchmark, research.queries, setResearchStatus, setResearchQueries, updateResearchQuery, setResearchResults, saveToLocal]
   );
 
   const handleStart = () => {
@@ -186,6 +188,7 @@ export default function ResearchPage() {
 
   const handleNext = () => {
     setStep(4);
+    saveToLocal();
     router.push("/generator/documents");
   };
 

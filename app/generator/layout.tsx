@@ -2,7 +2,8 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import { Zap, Moon, User } from "lucide-react";
+import { Zap, User } from "lucide-react";
+import ThemeToggle from "@/components/layout/theme-toggle";
 import { useGeneratorStore } from "@/lib/store/generator-store";
 import StepNavigation from "@/components/layout/step-navigation";
 
@@ -46,9 +47,7 @@ export default function GeneratorLayout({
           </div>
 
           <div className="flex items-center gap-2">
-            <button className="w-10 h-10 rounded-lg flex items-center justify-center bg-primary/10 text-primary hover:bg-primary/20 transition-all">
-              <Moon className="w-4 h-4" />
-            </button>
+            <ThemeToggle />
             <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-purple-400 flex items-center justify-center text-white cursor-pointer border-2 border-primary/30">
               <User className="w-4 h-4" />
             </div>

@@ -1,11 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-
 @layer base {
-  :root {
+  :root, .theme-dark {
     --background: 270 37% 10%;
     --foreground: 260 10% 95%;
     --card: 270 30% 13%;
@@ -23,6 +23,25 @@
     --input: 270 25% 14%;
     --ring: 272 93% 50%;
   }
+
+  .theme-ocean {
+    --background: 210 40% 96%;
+    --foreground: 215 25% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 215 25% 15%;
+    --primary: 217 91% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 30% 92%;
+    --secondary-foreground: 215 20% 30%;
+    --muted: 210 25% 90%;
+    --muted-foreground: 215 15% 45%;
+    --accent: 217 91% 50%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 51%;
+    --border: 210 20% 88%;
+    --input: 210 25% 94%;
+    --ring: 217 91% 50%;
+  }
 }
 
 @layer base {
@@ -37,22 +56,22 @@
 
 @layer utilities {
   .gradient-purple {
-    background: linear-gradient(135deg, hsl(272 93% 50%) 0%, hsl(280 90% 45%) 100%);
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
   }
   .gradient-purple-subtle {
-    background: linear-gradient(135deg, hsl(272 93% 50% / 0.1) 0%, hsl(280 90% 45% / 0.05) 100%);
+    background: linear-gradient(135deg, hsl(var(--primary) / 0.1) 0%, hsl(var(--accent) / 0.05) 100%);
   }
   .text-gradient {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, hsl(272 80% 65%) 0%, hsl(290 90% 70%) 100%);
+    background-image: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
   }
   .glass-card {
-    background: rgba(127, 13, 242, 0.05);
+    background: hsl(var(--primary) / 0.05);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(127, 13, 242, 0.1);
+    border: 1px solid hsl(var(--primary) / 0.1);
   }
   .glow-primary {
-    box-shadow: 0 0 40px rgba(127, 13, 242, 0.3), 0 0 80px rgba(127, 13, 242, 0.1);
+    box-shadow: 0 0 40px hsl(var(--primary) / 0.3), 0 0 80px hsl(var(--primary) / 0.1);
   }
 }
 
@@ -119,18 +138,46 @@
 .code-comment { color: #5c6370; font-style: italic; }
 .code-title { color: #61afef; font-weight: bold; }
 
+/* Ocean theme prose overrides */
+.theme-ocean .prose-dark {
+  color: hsl(215 25% 30%);
+}
+.theme-ocean .prose-dark h1, .theme-ocean .prose-dark h2, .theme-ocean .prose-dark h3, .theme-ocean .prose-dark h4 {
+  color: hsl(215 25% 15%);
+}
+.theme-ocean .prose-dark code {
+  background: hsl(210 30% 92%);
+}
+.theme-ocean .prose-dark pre {
+  background: hsl(215 25% 15%);
+  color: hsl(210 20% 90%);
+}
+.theme-ocean .prose-dark th, .theme-ocean .prose-dark td {
+  border-color: hsl(210 20% 85%);
+}
+.theme-ocean .prose-dark th {
+  background: hsl(210 30% 94%);
+}
+.theme-ocean .prose-dark a {
+  color: hsl(217 91% 50%);
+}
+.theme-ocean .prose-dark blockquote {
+  border-left-color: hsl(217 91% 50%);
+  color: hsl(215 15% 45%);
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: hsl(270 30% 8%);
+  background: hsl(var(--background));
 }
 ::-webkit-scrollbar-thumb {
-  background: hsl(270 25% 25%);
+  background: hsl(var(--muted));
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(270 25% 35%);
+  background: hsl(var(--muted-foreground));
 }

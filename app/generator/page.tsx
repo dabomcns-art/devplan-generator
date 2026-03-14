@@ -19,6 +19,9 @@ import {
   DollarSign,
   Layers,
   ArrowRight,
+  Globe,
+  Loader2,
+  CheckCircle2,
 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { useGeneratorStore } from "@/lib/store/generator-store";
@@ -67,6 +70,9 @@ export default function Step1Page() {
   const store = useGeneratorStore();
   const [templates, setTemplates] = useState<QuickTemplate[]>([]);
   const [showTemplates, setShowTemplates] = useState(false);
+  const [analyzeUrl, setAnalyzeUrl] = useState("");
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analyzeStatus, setAnalyzeStatus] = useState<"idle" | "success" | "error">("idle");
 
   const {
     register,
@@ -119,6 +125,40 @@ export default function Step1Page() {
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watchedJson]);
+
+  const handleAnalyzeUrl = async () => {
+    if (!analyzeUrl.trim()) return;
+    setIsAnalyzing(true);
+    setAnalyzeStatus("idle");
+
+    try {
+      const res = await fetch("/api/analyze-url", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: analyzeUrl.trim() }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "분석 실패");
+
+      const o = data.overview;
+      reset({
+        project_name: o.project_name || "",
+        project_purpose: o.project_purpose || "",
+        target_users: o.target_users || [],
+        core_features: o.core_features || [],
+        platform: o.platform || [],
+        budget_scale: o.budget_scale || "mvp",
+        timeline: o.timeline || "3months",
+      });
+      store.updateOverview(o);
+      setAnalyzeStatus("success");
+    } catch {
+      setAnalyzeStatus("error");
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
 
   const applyTemplate = (tpl: QuickTemplate) => {
     reset(tpl.overview);
@@ -176,10 +216,10 @@ export default function Step1Page() {
         </p>
       </div>
 
-      {/* AI Context Card */}
+      {/* AI URL Analysis */}
       <div className="rounded-2xl border border-primary/20 shadow-xl overflow-hidden">
         <div className="flex flex-col md:flex-row">
-          {/* Left: gradient image area */}
+          {/* Left: gradient area */}
           <div className="relative flex items-center justify-center md:w-48 min-h-[160px] bg-gradient-to-br from-primary/30 via-primary/10 to-transparent">
             <div className="absolute inset-0 gradient-purple-subtle" />
             <div className="relative z-10 flex flex-col items-center gap-2">
@@ -190,29 +230,75 @@ export default function Step1Page() {
             </div>
           </div>
 
-          {/* Right: content */}
+          {/* Right: URL input */}
           <div className="flex-1 bg-card p-6">
             <div className="flex flex-wrap items-center gap-3 mb-2">
-              <h2 className="text-lg font-bold text-foreground">Project Context</h2>
+              <h2 className="text-lg font-bold text-foreground">AI 자동 분석</h2>
               <span className="rounded-full bg-primary/20 px-3 py-0.5 text-xs font-semibold text-primary">
                 AI Powered
               </span>
             </div>
             <p className="text-sm text-muted-foreground mb-4">
-              프로젝트의 목적, 타겟 사용자, 핵심 기능을 입력하면 AI가 최적화된 개발 계획서를 자동 생성합니다.
-              상세한 정보를 제공할수록 더 정확한 결과물을 얻을 수 있습니다.
+              벤치마킹할 서비스 URL을 입력하면 AI가 분석하여 아래 모든 항목을 자동으로 채워줍니다.
             </p>
-            <div className="flex flex-wrap items-center gap-3">
-              {/* Template dropdown button */}
+            <div className="flex gap-2 mb-3">
+              <div className="relative flex-1">
+                <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <input
+                  type="url"
+                  value={analyzeUrl}
+                  onChange={(e) => { setAnalyzeUrl(e.target.value); setAnalyzeStatus("idle"); }}
+                  placeholder="https://example.com"
+                  disabled={isAnalyzing}
+                  className="w-full rounded-xl border border-slate-800 bg-input pl-10 pr-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-shadow disabled:opacity-50"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={handleAnalyzeUrl}
+                disabled={isAnalyzing || !analyzeUrl.trim()}
+                className={cn(
+                  "flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-white transition-all shrink-0",
+                  isAnalyzing || !analyzeUrl.trim()
+                    ? "bg-muted text-muted-foreground cursor-not-allowed"
+                    : "gradient-purple shadow-lg shadow-primary/30 hover:opacity-90"
+                )}
+              >
+                {isAnalyzing ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    분석 중...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="h-4 w-4" />
+                    AI 분석
+                  </>
+                )}
+              </button>
+            </div>
+            {analyzeStatus === "success" && (
+              <div className="flex items-center gap-2 text-sm text-green-400">
+                <CheckCircle2 className="h-4 w-4" />
+                분석 완료! 아래 항목이 자동으로 채워졌습니다.
+              </div>
+            )}
+            {analyzeStatus === "error" && (
+              <p className="text-sm text-destructive">분석에 실패했습니다. URL을 확인하고 다시 시도하세요.</p>
+            )}
+
+            {/* Template dropdown */}
+            <div className="flex flex-wrap items-center gap-3 mt-4 pt-4 border-t border-primary/10">
+              <span className="text-xs text-muted-foreground">또는</span>
               <div className="relative">
                 <button
                   type="button"
                   onClick={() => setShowTemplates(!showTemplates)}
-                  className="gradient-purple flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-primary/30 transition-opacity hover:opacity-90"
+                  className="flex items-center gap-2 rounded-xl border border-primary/20 px-4 py-2 text-sm font-medium text-foreground hover:bg-secondary transition-colors"
                 >
-                  <Sparkles className="h-4 w-4" />
-                  AI Prompt Guide
-                  <ChevronDown className={cn("h-4 w-4 transition-transform", showTemplates && "rotate-180")} />
+                  <Sparkles className="h-3.5 w-3.5 text-primary" />
+                  템플릿으로 시작
+                  <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", showTemplates && "rotate-180")} />
                 </button>
                 {showTemplates && (
                   <div className="absolute z-10 mt-2 w-72 rounded-xl border border-border bg-card p-2 shadow-xl">
@@ -232,12 +318,6 @@ export default function Step1Page() {
                   </div>
                 )}
               </div>
-              <button
-                type="button"
-                className="text-sm text-primary underline-offset-2 hover:underline transition-colors"
-              >
-                See examples
-              </button>
             </div>
           </div>
         </div>
@@ -283,6 +363,19 @@ export default function Step1Page() {
                 {user}
               </button>
             ))}
+            {/* AI 분석으로 추가된 커스텀 유저 */}
+            {(watchedData.target_users || [])
+              .filter((u) => !TARGET_USER_PRESETS.includes(u.label))
+              .map((u) => (
+                <button
+                  key={u.id}
+                  type="button"
+                  onClick={() => toggleTargetUser(u.label)}
+                  className="rounded-full border border-primary bg-primary/20 text-primary px-3 py-1 text-xs font-medium transition-colors"
+                >
+                  {u.label} ✕
+                </button>
+              ))}
           </div>
           {errors.target_users && (
             <p className="text-sm text-destructive">{errors.target_users.message}</p>

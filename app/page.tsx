@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   Zap,
@@ -13,6 +15,7 @@ import {
   Twitter,
   Linkedin,
 } from "lucide-react";
+import ThemeToggle from "@/components/layout/theme-toggle";
 
 const steps = [
   {
@@ -102,8 +105,9 @@ export default function Home() {
             ))}
           </nav>
 
-          {/* CTA + Avatar */}
+          {/* CTA + Theme + Avatar */}
           <div className="flex items-center gap-3 shrink-0">
+            <ThemeToggle />
             <Link
               href="/generator"
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white gradient-purple hover:opacity-90 transition-opacity"
